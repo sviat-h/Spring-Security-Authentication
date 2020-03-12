@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    platform: org.hibernate.dialect.PostgreSQL9Dialect
+    url: jdbc:postgresql://localhost:5432/hw21_users
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+    url: jdbc:postgresql://localhost:5432/hw21_users
+    username: postgres
+    password: postgres
+    check-location: false
+    locations: classpath:db/migration
+    schemas: public
+    baseline-on-migrate: true
