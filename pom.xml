@@ -18,6 +18,11 @@
         <java.version>11</java.version>
     </properties>
 
+    <authentication-manager>
+        <authentication-provider
+                ref="customAuthenticationProvider"/>
+    </authentication-manager>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
