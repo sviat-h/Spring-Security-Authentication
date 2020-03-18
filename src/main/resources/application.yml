@@ -20,3 +20,5 @@ spring:
     locations: classpath:db/migration
     schemas: public
     baseline-on-migrate: true
+server:
+  port: 8081

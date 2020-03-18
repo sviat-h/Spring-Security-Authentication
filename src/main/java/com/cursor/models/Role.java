@@ -1,13 +1,15 @@
 package com.cursor.models;
 
-import org.springframework.security.core.GrantedAuthority;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public enum Role implements GrantedAuthority {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+
+
+public enum Role {
     USER,
     ADMIN;
-
-    @Override
-    public String getAuthority() {
-        return name();
-    }
 }
