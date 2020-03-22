@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-
 @Setter
 @Getter
 @Configuration
@@ -22,34 +21,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationConfig authenticationConfig;
 
-
     private AccessDeniedHandler accessDeniedHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf().disable().authorizeRequests()
-//                .antMatchers("/", "/registration")
-//                .permitAll()
-//                .anyRequest()
-//                .authenticated()
-//
-//                .and()
-//
-//                .formLogin()
-//                .loginPage("/login")
-//                .permitAll()
-//                .defaultSuccessUrl("/home")
-//
-//                .and()
-//
-//                .logout()
-//                .permitAll();
-
         http.csrf().disable().headers().frameOptions().disable();
+
         http.authorizeRequests()
                 .antMatchers("/", "/home")
                 .permitAll()
-                .antMatchers("/admin")
+                .antMatchers("/admin", "/admin/**")
                 .hasAnyRole("ADMIN")
                 .antMatchers("/user/**")
                 .hasAnyRole("USER")
