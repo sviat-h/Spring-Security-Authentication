@@ -1,13 +1,11 @@
 package com.cursor.service;
 
+import com.cursor.models.User;
 import com.cursor.repository.UserRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
 
@@ -15,8 +13,7 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return (UserDetails) userRepository.findByUsername(username);
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

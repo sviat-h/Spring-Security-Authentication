@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 
 @Setter
@@ -21,11 +22,37 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationConfig authenticationConfig;
 
+
+    private AccessDeniedHandler accessDeniedHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        http.csrf().disable().authorizeRequests()
+//                .antMatchers("/", "/registration")
+//                .permitAll()
+//                .anyRequest()
+//                .authenticated()
+//
+//                .and()
+//
+//                .formLogin()
+//                .loginPage("/login")
+//                .permitAll()
+//                .defaultSuccessUrl("/home")
+//
+//                .and()
+//
+//                .logout()
+//                .permitAll();
+
+        http.csrf().disable().headers().frameOptions().disable();
         http.authorizeRequests()
-                .antMatchers("/", "/registration")
+                .antMatchers("/", "/home")
                 .permitAll()
+                .antMatchers("/admin")
+                .hasAnyRole("ADMIN")
+                .antMatchers("/user/**")
+                .hasAnyRole("USER")
                 .anyRequest()
                 .authenticated()
 
@@ -34,12 +61,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
-                .defaultSuccessUrl("/home")
 
                 .and()
 
                 .logout()
-                .permitAll();
+                .permitAll()
+
+                .and()
+
+                .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler);
     }
 
     @Override

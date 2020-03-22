@@ -1,7 +1,8 @@
 package com.cursor.config;
 
+import com.cursor.models.Role;
 import com.cursor.models.User;
-import com.cursor.repository.UserRepository;
+import com.cursor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +21,7 @@ import java.util.Collection;
 public class AuthenticationConfig implements AuthenticationProvider {
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -29,13 +30,10 @@ public class AuthenticationConfig implements AuthenticationProvider {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-
-        User user = userRepository.findByUsername(username);
-        if (user != null) {
-            if (username.equals(user.getUsername()) && BCrypt.checkpw(password, user.getPassword())) {
-                Collection<GrantedAuthority> grantedAuthorities = getGrantedAuthorities(user);
-                authenticationToken = new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails.User(username, password, grantedAuthorities), password, grantedAuthorities);
-            }
+        User user = userService.findUserByUsername(username);
+        if (user != null && username.equals(user.getUsername()) && BCrypt.checkpw(password, user.getPassword())) {
+            Collection<GrantedAuthority> grantedAuthorities = getGrantedAuthorities(user);
+            authenticationToken = new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails.User(username, password, grantedAuthorities), password, grantedAuthorities);
         } else {
             throw new UsernameNotFoundException("User + " + username + " not found.");
         }
@@ -49,10 +47,9 @@ public class AuthenticationConfig implements AuthenticationProvider {
 
     private Collection<GrantedAuthority> getGrantedAuthorities(User user) {
         Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        if (user.getRole().getName().equals("ADMIN")) {
-            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        }
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        boolean isAdmin = (user.getRole().getName().equals(Role.ADMIN.getName())) ?
+                grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN")) : grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
+
         return grantedAuthorities;
     }
 }
