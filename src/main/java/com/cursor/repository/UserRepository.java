@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query(value = "update users set role=:role where id=:id", nativeQuery = true)
     void updateRoleById(@Param("id") Integer id, @Param("role") Role role);
+
+    User findUserById(Integer id);
 }

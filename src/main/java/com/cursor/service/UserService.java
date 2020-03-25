@@ -1,6 +1,5 @@
 package com.cursor.service;
 
-import com.cursor.models.Role;
 import com.cursor.models.User;
 import com.cursor.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -18,23 +17,19 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public void createUser(Integer id, String username, String password, boolean active, Role role) {
-        userRepository.save(new User(id, username, password, active, role));
+    public void createUser(User user) {
+        userRepository.save(new User(user.getId(), user.getUsername(), user.getPassword(), user.isActive(), user.getRole()));
     }
 
-    public void updateUser(Integer id, String username, String password, Role role, boolean active) {
-        userRepository.updateUserById(id, username, password, role, active);
+    public void updateUser(User user) {
+        userRepository.updateUserById(user.getId(), user.getUsername(), user.getPassword(), user.getRole(), user.isActive());
     }
 
-    public void updateActive(Integer id, boolean active) {
-        userRepository.updateActiveById(id, active);
+    public void deleteUser(User user) {
+        userRepository.deleteById(user.getId());
     }
 
-    public void updateRole(Integer id, Role role) {
-        userRepository.updateRoleById(id, role);
-    }
-
-    public void deleteUserById(Integer id) {
-        userRepository.deleteById(id);
+    public User findById(Integer id) {
+        return userRepository.findUserById(id);
     }
 }

@@ -1,5 +1,6 @@
 package com.cursor.models;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "users")
+@Builder
 public class User {
 
     @Id

@@ -1,10 +1,18 @@
 package com.cursor.controller;
 
-import com.cursor.models.Role;
 import com.cursor.models.User;
 import com.cursor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 
 @RestController
 @RequestMapping(path = "/admin")
@@ -14,32 +22,40 @@ public class AdminController {
     UserService userService;
 
     @GetMapping(path = "/byUsername")
-    public User findByUsername(String username) {
+    public User findByUsername(@RequestParam String username) {
         return userService.findUserByUsername(username);
     }
 
-    @PostMapping(path = "/createUser")
-    public void createUser(Integer id, String username, String password, boolean active, Role role) {
-        userService.createUser(id, username, password, active, role);
+    @POST
+    @Path("/update/{id}")
+    public Response updateUSer(@RequestParam(name = "id") Integer id, User user) {
+        User updatedUser = userService.findById(id);
+
+        updatedUser.setUsername(user.getUsername());
+        updatedUser.setPassword(user.getPassword());
+        updatedUser.setActive(user.isActive());
+        updatedUser.setRole(user.getRole());
+
+        userService.updateUser(updatedUser);
+
+        return Response.ok().build();
     }
 
-    @PostMapping(path = "/updateUser")
-    public void updateUser(Integer id, String username, String password, Role role, boolean active) {
-        userService.updateUser(id, username, password, role, active);
+    @POST
+    @Path("/create")
+    public Response createUser(User user) {
+        userService.createUser(user);
+
+        return Response.ok().build();
     }
 
-    @PostMapping(path = "/updateActive")
-    public void updateActive(Integer id, boolean active) {
-        userService.updateActive(id, active);
-    }
+    @DELETE
+    @Path("/delete/{id}")
+    public Response deleteUser(@PathParam("id") Integer id) {
+        User getUser = userService.findById(id);
 
-    @PostMapping(path = "/updateRole")
-    public void updateRole(Integer id, Role role) {
-        userService.updateRole(id, role);
-    }
+        userService.deleteUser(getUser);
 
-    @DeleteMapping(path = "/deleteUser")
-    public void deleteUserById(Integer id) {
-        userService.deleteUserById(id);
+        return Response.ok().build();
     }
 }

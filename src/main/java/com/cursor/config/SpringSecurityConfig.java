@@ -41,6 +41,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .formLogin()
                 .loginPage("/login")
+                .and()
+                .logout()
                 .permitAll()
 
                 .and()
@@ -56,6 +58,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationConfig);
+        auth.authenticationProvider(authenticationConfig).getDefaultUserDetailsService();
     }
 }
